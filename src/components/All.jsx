@@ -2,10 +2,11 @@ import { comma } from "postcss/lib/list";
 import React from "react";
 
 function All({ tasks, setTasks, setActives, setCompleteds }) {
-  const handleToggleTask = (taskName) => {
-    // Cập nhật lại tab all 
+  // Function để toggle task theo id (Từ active:true completed:false sang active:false completed:true)
+  const handleToggleTask = (taskId) => {
+    // Cập nhật lại tab All
     const updatedTasks = tasks.map((task) => {
-      if (task.name === taskName) {
+      if (task.id === taskId) {
         return {
           ...task,
           active: !task.active,
@@ -15,13 +16,14 @@ function All({ tasks, setTasks, setActives, setCompleteds }) {
       return task;
     });
 
+    // console.log(updatedTasks); // Check xem task đã được cập nhật chưa
     setTasks(updatedTasks);
 
-    // Cập nhật lại tab actives (lọc lại task active)
+    // Cập nhật lại tab Active (lọc lại task active)
     const updatedActives = updatedTasks.filter((task) => task.active === true);
     setActives(updatedActives);
 
-    // Cập nhật lại tab completed (lọc lại task completed)
+    // Cập nhật lại tab Completed (lọc lại task completed)
     const updatedCompleteds = updatedTasks.filter(
       (task) => task.completed === true
     );
@@ -36,11 +38,11 @@ function All({ tasks, setTasks, setActives, setCompleteds }) {
     <div className="space-y-2">
       <ul className="space-y-3 text-left pl-0">
         {tasks.map((task) => (
-          <li key={task.name} className="font-semibold flex items-center mt-4">
+          <li key={task.id} className="font-semibold flex items-center mt-4">
             <input
               placeholder=""
               type="checkbox"
-              onChange={() => handleToggleTask(task.name)}
+              onChange={() => handleToggleTask(task.id)}
               {...(task.active ? { checked: false } : { checked: true })}
               className="mr-2 w-4 h-4 border-gray-300 rounded focus:ring-blue-500 accent-blue-500"
             />

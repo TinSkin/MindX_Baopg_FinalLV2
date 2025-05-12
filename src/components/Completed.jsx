@@ -2,15 +2,14 @@ import React from "react";
 import { RxTrash } from "react-icons/rx";
 
 function Completed({ tasks, setTasks, setActives, completeds, setCompleteds }) {
-  const handleDelete = (taskName) => {
-    // Xóa task khỏi completeds
-    const updatedCompleteds = completeds.filter(
-      (task) => task.name !== taskName
-    );
+  // Function để xóa task theo id
+  const handleDelete = (taskId) => {
+    // Xóa task khỏi tab Completed
+    const updatedCompleteds = completeds.filter((task) => task.id !== taskId);
     setCompleteds(updatedCompleteds);
 
-    // Xóa task khỏi tasks (All tab)
-    const updatedTasks = tasks.filter((task) => task.name !== taskName);
+    // Xóa task khỏi tab All
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(updatedTasks);
 
     // Lưu vào localStorage nếu cần
@@ -18,6 +17,7 @@ function Completed({ tasks, setTasks, setActives, completeds, setCompleteds }) {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
+  // Function để xóa hết task trong tab Completed
   const handleDeleteAll = () => {
     // Xóa hết completeds
     setCompleteds([]);
@@ -31,10 +31,11 @@ function Completed({ tasks, setTasks, setActives, completeds, setCompleteds }) {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
-  const handleToggleTask = (taskName) => {
-    // Cập nhật lại tab all 
+  // Function để toggle task theo id (Từ active:false completed:true sang active:true completed:false)
+  const handleToggleTask = (taskId) => {
+    // Cập nhật lại tab All
     const updatedTasks = tasks.map((task) => {
-      if (task.name === taskName) {
+      if (task.id === taskId) {
         return {
           ...task,
           active: !task.active,
@@ -43,18 +44,21 @@ function Completed({ tasks, setTasks, setActives, completeds, setCompleteds }) {
       }
       return task;
     });
+
+    // console.log(updatedTasks); // Check xem task đã được cập nhật chưa
     setTasks(updatedTasks);
 
-    // Cập nhật lại tab actives (lọc lại task active)
+    // Cập nhật lại tab Active (lọc lại task active)
     const updatedActives = updatedTasks.filter((task) => task.active === true);
     setActives(updatedActives);
 
-    // Cập nhật lại tab completed (lọc lại task completed)
+    // Cập nhật lại tab Completed (lọc lại task completed)
     const updatedCompleteds = updatedTasks.filter(
       (task) => task.completed === true
     );
     setCompleteds(updatedCompleteds);
 
+    // Lưu vào localStorage
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     localStorage.setItem("actives", JSON.stringify(updatedActives));
     localStorage.setItem("completeds", JSON.stringify(updatedCompleteds));
@@ -65,20 +69,20 @@ function Completed({ tasks, setTasks, setActives, completeds, setCompleteds }) {
       <ul className="space-y-3 text-left pl-0">
         {completeds.map((task) => (
           <li
-            key={task.name}
+            key={task.id}
             className="font-semibold line-through flex items-center mt-4"
           >
             <input
               placeholder=""
               type="checkbox"
-              onChange={() => handleToggleTask(task.name)}
+              onChange={() => handleToggleTask(task.id)}
               className="mr-2 w-4 h-4 border-gray-300 rounded focus:ring-blue-500 accent-blue-500 peer"
               defaultChecked
             />{" "}
             {task.name}
             <button
               type="button"
-              onClick={() => handleDelete(task.name)}
+              onClick={() => handleDelete(task.id)}
               className="text-gray-500 py-1 px-3 rounded text-lg ml-auto"
             >
               <RxTrash className="mr-2" />

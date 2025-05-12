@@ -4,29 +4,35 @@ import { Link, useLocation } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import ButtonAdd from "./ButtonAdd";
 
-function Navbar({ setTasks, setActives }) {
-  // Get the current route
+function Navbar({ tasks, setTasks, setActives }) {
+  // Lấy location hiện tại để xác định tab nào đang được chọn
   const location = useLocation();
 
   const [newTask, setNewTask] = useState("");
 
-  // Function to handle adding a new task
+  // Function để thêm task mới
   const handleAddTask = (e) => {
     e.preventDefault();
 
-    // Check if the input is empty, if so, show an alert
+    // Kiểm tra xem task có rỗng hay không
     if (newTask.trim() === "") {
       alert("Please enter a task");
       return;
     }
 
+    // Tạo id mới cho task, nếu tasks có task thì lấy id lớn nhất + 1, nếu không thì id = 1
+    const nextId = tasks.length > 0 ? Math.max(...tasks.map(task => task.id)) + 1 : 1;
+
     const newTaskObj = {
+      id: nextId,
       name: newTask,
       active: true,
       completed: false,
     };
 
-    // Add the new task to the tasks and actives state
+    // console.log(newTaskObj); // Check task mới đã được tạo chưa
+
+    // Thêm task mới vào tab All & Active
     setTasks((prev) => [...prev, newTaskObj]);
     setActives((prev) => [...prev, newTaskObj]);
 
